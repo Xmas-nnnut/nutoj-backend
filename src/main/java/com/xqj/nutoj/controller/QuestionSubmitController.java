@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
-@RequestMapping("/post_thumb")
+@RequestMapping("/question_submit")
 @Slf4j
 public class QuestionSubmitController {
 
