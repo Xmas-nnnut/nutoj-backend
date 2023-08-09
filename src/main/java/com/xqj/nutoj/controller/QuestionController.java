@@ -10,10 +10,7 @@ import com.xqj.nutoj.common.ResultUtils;
 import com.xqj.nutoj.constant.UserConstant;
 import com.xqj.nutoj.exception.BusinessException;
 import com.xqj.nutoj.exception.ThrowUtils;
-import com.xqj.nutoj.model.dto.question.QuestionAddRequest;
-import com.xqj.nutoj.model.dto.question.QuestionEditRequest;
-import com.xqj.nutoj.model.dto.question.QuestionQueryRequest;
-import com.xqj.nutoj.model.dto.question.QuestionUpdateRequest;
+import com.xqj.nutoj.model.dto.question.*;
 import com.xqj.nutoj.model.entity.Question;
 import com.xqj.nutoj.model.entity.User;
 import com.xqj.nutoj.model.vo.QuestionVO;
@@ -65,6 +62,14 @@ public class QuestionController {
         List<String> tags = questionAddRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
+        }
+        List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
+        if (judgeCase != null) {
+            question.setJudgeCase(GSON.toJson(judgeCase));
+        }
+        JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
+        if (judgeConfig != null) {
+            question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
         questionService.validQuestion(question, true);
         User loginUser = userService.getLoginUser(request);
@@ -120,6 +125,14 @@ public class QuestionController {
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
+        List<JudgeCase> judgeCase = questionUpdateRequest.getJudgeCase();
+        if (judgeCase != null) {
+            question.setJudgeCase(GSON.toJson(judgeCase));
+        }
+        JudgeConfig judgeConfig = questionUpdateRequest.getJudgeConfig();
+        if (judgeConfig != null) {
+            question.setJudgeConfig(GSON.toJson(judgeConfig));
+        }
         // 参数校验
         questionService.validQuestion(question, false);
         long id = questionUpdateRequest.getId();
@@ -157,7 +170,7 @@ public class QuestionController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+                                                               HttpServletRequest request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫
@@ -176,7 +189,7 @@ public class QuestionController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+                                                                 HttpServletRequest request) {
         if (questionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -189,6 +202,24 @@ public class QuestionController {
         Page<Question> questionPage = questionService.page(new Page<>(current, size),
                 questionService.getQueryWrapper(questionQueryRequest));
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
+    }
+
+    /**
+     * 分页获取题目列表（仅管理员）
+     *
+     * @param questionQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/list/page")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
+                                                           HttpServletRequest request) {
+        long current = questionQueryRequest.getCurrent();
+        long size = questionQueryRequest.getPageSize();
+        Page<Question> questionPage = questionService.page(new Page<>(current, size),
+                questionService.getQueryWrapper(questionQueryRequest));
+        return ResultUtils.success(questionPage);
     }
 
     // endregion
@@ -210,6 +241,14 @@ public class QuestionController {
         List<String> tags = questionEditRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
+        }
+        List<JudgeCase> judgeCase = questionEditRequest.getJudgeCase();
+        if (judgeCase != null) {
+            question.setJudgeCase(GSON.toJson(judgeCase));
+        }
+        JudgeConfig judgeConfig = questionEditRequest.getJudgeConfig();
+        if (judgeConfig != null) {
+            question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
         // 参数校验
         questionService.validQuestion(question, false);

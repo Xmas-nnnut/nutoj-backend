@@ -11,6 +11,7 @@ import java.util.List;
  */
 @Data
 public class QuestionUpdateRequest implements Serializable {
+
     /**
      * id
      */
@@ -37,9 +38,15 @@ public class QuestionUpdateRequest implements Serializable {
     private String answer;
 
     /**
-     * 创建用户 id
+     * 判题用例
      */
-    private Long userId;
+    private List<JudgeCase> judgeCase;
+
+    /**
+     * 判题配置
+     */
+    private JudgeConfig judgeConfig;
 
     private static final long serialVersionUID = 1L;
+
 }

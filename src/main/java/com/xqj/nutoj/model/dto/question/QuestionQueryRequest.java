@@ -45,4 +45,5 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
     private Long userId;
 
     private static final long serialVersionUID = 1L;
+
 }
