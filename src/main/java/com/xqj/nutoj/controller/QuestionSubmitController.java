@@ -1,11 +1,15 @@
 package com.xqj.nutoj.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xqj.nutoj.common.BaseResponse;
 import com.xqj.nutoj.common.ErrorCode;
 import com.xqj.nutoj.common.ResultUtils;
 import com.xqj.nutoj.exception.BusinessException;
 import com.xqj.nutoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.xqj.nutoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
+import com.xqj.nutoj.model.entity.QuestionSubmit;
 import com.xqj.nutoj.model.entity.User;
+import com.xqj.nutoj.model.vo.QuestionSubmitVO;
 import com.xqj.nutoj.service.QuestionSubmitService;
 import com.xqj.nutoj.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,10 +51,33 @@ public class QuestionSubmitController {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        // 登录才能点赞
+        // 登录才能提交
         final User loginUser = userService.getLoginUser(request);
         long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitId);
     }
+
+
+
+    /**
+     * 分页获取题目提交列表（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                         HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        // 从数据库中查询原始的题目提交分页信息
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+        final User loginUser = userService.getLoginUser(request);
+        // 返回脱敏信息
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
 
 }
