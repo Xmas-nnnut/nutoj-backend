@@ -58,7 +58,8 @@ public class UserController {
 
     /**
      * 用户注册
-     *
+     * tip:@RequestBody注解用于让前端传来的json与对象进行关联
+     * tip:@RestController注解用于用于接收json
      * @param userRegisterRequest
      * @return
      */
