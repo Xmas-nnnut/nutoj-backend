@@ -1,7 +1,7 @@
 package com.xqj.nutoj.model.vo;
 
 import cn.hutool.json.JSONUtil;
-import com.xqj.nutoj.model.dto.questionsubmit.JudgeInfo;
+import com.xqj.nutoj.judge.codesandbox.model.JudgeInfo;
 import com.xqj.nutoj.model.entity.QuestionSubmit;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;

@@ -3,7 +3,7 @@ package com.xqj.nutoj.judge.strategy;
 import cn.hutool.json.JSONUtil;
 import com.xqj.nutoj.model.dto.question.JudgeCase;
 import com.xqj.nutoj.model.dto.question.JudgeConfig;
-import com.xqj.nutoj.model.dto.questionsubmit.JudgeInfo;
+import com.xqj.nutoj.judge.codesandbox.model.JudgeInfo;
 import com.xqj.nutoj.model.entity.Question;
 import com.xqj.nutoj.model.enums.JudgeInfoMessageEnum;
 

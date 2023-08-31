@@ -4,7 +4,7 @@ import com.xqj.nutoj.judge.strategy.DefaultJudgeStrategy;
 import com.xqj.nutoj.judge.strategy.JavaLanguageJudgeStrategy;
 import com.xqj.nutoj.judge.strategy.JudgeContext;
 import com.xqj.nutoj.judge.strategy.JudgeStrategy;
-import com.xqj.nutoj.model.dto.questionsubmit.JudgeInfo;
+import com.xqj.nutoj.judge.codesandbox.model.JudgeInfo;
 import com.xqj.nutoj.model.entity.QuestionSubmit;
 import org.springframework.stereotype.Service;
 

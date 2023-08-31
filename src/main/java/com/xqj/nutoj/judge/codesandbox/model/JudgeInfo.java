@@ -1,4 +1,4 @@
-package com.xqj.nutoj.model.dto.questionsubmit;
+package com.xqj.nutoj.judge.codesandbox.model;
 
 import lombok.Data;
 

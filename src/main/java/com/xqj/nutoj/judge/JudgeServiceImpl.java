@@ -10,7 +10,7 @@ import com.xqj.nutoj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.xqj.nutoj.judge.codesandbox.model.ExecuteCodeResponse;
 import com.xqj.nutoj.judge.strategy.JudgeContext;
 import com.xqj.nutoj.model.dto.question.JudgeCase;
-import com.xqj.nutoj.model.dto.questionsubmit.JudgeInfo;
+import com.xqj.nutoj.judge.codesandbox.model.JudgeInfo;
 import com.xqj.nutoj.model.entity.Question;
 import com.xqj.nutoj.model.entity.QuestionSubmit;
 import com.xqj.nutoj.model.enums.QuestionSubmitStatusEnum;

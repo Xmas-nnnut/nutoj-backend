@@ -1,6 +1,6 @@
 package com.xqj.nutoj.judge.strategy;
 
-import com.xqj.nutoj.model.dto.questionsubmit.JudgeInfo;
+import com.xqj.nutoj.judge.codesandbox.model.JudgeInfo;
 
 /**
  * 判题策略

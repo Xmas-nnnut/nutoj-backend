@@ -1,6 +1,5 @@
 package com.xqj.nutoj.judge.codesandbox.model;
 
-import com.xqj.nutoj.model.dto.questionsubmit.JudgeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
