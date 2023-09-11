@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,6 +94,24 @@ public class JudgeServiceImpl implements JudgeService {
         questionSubmitUpdate.setId(questionSubmitId);
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
+
+
+        // todo: 设置提交数
+        Integer acceptedNum = question.getAcceptedNum();
+        Question updateQuestion = new Question();
+        synchronized (question.getSubmitNum()) {
+            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
+                acceptedNum = acceptedNum + 1;
+            }
+            updateQuestion.setId(questionId);
+            updateQuestion.setAcceptedNum(acceptedNum);
+            boolean save = questionService.updateById(updateQuestion);
+            if (!save) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
+            }
+        }
+
+
         update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误");
