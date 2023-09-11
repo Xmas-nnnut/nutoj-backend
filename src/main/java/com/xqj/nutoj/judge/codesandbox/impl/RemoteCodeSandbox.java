@@ -8,6 +8,7 @@ import com.xqj.nutoj.judge.codesandbox.CodeSandbox;
 import com.xqj.nutoj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.xqj.nutoj.judge.codesandbox.model.ExecuteCodeResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * 远程代码沙箱（实际调用接口的沙箱）
