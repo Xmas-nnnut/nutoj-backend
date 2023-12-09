@@ -96,20 +96,20 @@ public class JudgeServiceImpl implements JudgeService {
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
 
 
-        // todo: 设置提交数
-        Integer acceptedNum = question.getAcceptedNum();
-        Question updateQuestion = new Question();
-        synchronized (question.getSubmitNum()) {
-            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
-                acceptedNum = acceptedNum + 1;
-            }
-            updateQuestion.setId(questionId);
-            updateQuestion.setAcceptedNum(acceptedNum);
-            boolean save = questionService.updateById(updateQuestion);
-            if (!save) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
-            }
-        }
+        // todo: 设置通过数
+//        Integer acceptedNum = question.getAcceptedNum();
+//        Question updateQuestion = new Question();
+//        synchronized (question.getSubmitNum()) {
+//            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
+//                acceptedNum = acceptedNum + 1;
+//            }
+//            updateQuestion.setId(questionId);
+//            updateQuestion.setAcceptedNum(acceptedNum);
+//            boolean save = questionService.updateById(updateQuestion);
+//            if (!save) {
+//                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
+//            }
+//        }
 
 
         update = questionSubmitService.updateById(questionSubmitUpdate);

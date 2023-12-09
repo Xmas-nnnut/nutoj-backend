@@ -10,6 +10,7 @@ import com.xqj.nutoj.common.ResultUtils;
 import com.xqj.nutoj.constant.UserConstant;
 import com.xqj.nutoj.exception.BusinessException;
 import com.xqj.nutoj.exception.ThrowUtils;
+import com.xqj.nutoj.manager.RedisLimiterManager;
 import com.xqj.nutoj.model.dto.question.*;
 import com.xqj.nutoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.xqj.nutoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
@@ -21,6 +22,7 @@ import com.xqj.nutoj.model.vo.QuestionVO;
 import com.xqj.nutoj.service.QuestionService;
 import com.xqj.nutoj.service.QuestionSubmitService;
 import com.xqj.nutoj.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,9 @@ public class QuestionController {
 
     @Resource
     private QuestionSubmitService questionSubmitService;
+
+    @Resource
+    private RedisLimiterManager redissonLimiter;
 
     private final static Gson GSON = new Gson();
 
@@ -309,6 +314,11 @@ public class QuestionController {
         }
         // 登录才能提交
         final User loginUser = userService.getLoginUser(request);
+        // 限流
+        boolean rateLimit = redissonLimiter.doRateLimit(loginUser.getId().toString());
+        if (!rateLimit) {
+            return ResultUtils.error(ErrorCode.TOO_MANY_REQUEST, "提交过于频繁,请稍后重试");
+        }
         long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitId);
     }

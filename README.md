@@ -1,6 +1,6 @@
 <center>
 
-# Cat Online Judge
+# Nut Online Judge
 
 <div >
     <img src="https://img.shields.io/badge/Gson-3.9.1-blue.svg" alt="Gson">
@@ -116,14 +116,14 @@ Nut OJ（Nut Online Judge）系统是一个在线算法评测系统，用户可�
 
 ### 服务模块划分
 
-1. shieroj-backend-common：系统通用模块，比如用户角色权限校验，异常处理，统一返回值，常量，工具类等
-2. shieroj-backend-file-service：系统文件模块，比如用户头像上传等
-3. shieroj-backend-gateway：系统网关模块：实现了给前端返回统一接口路由，聚合文档（Knife4j），全局跨域配置，权限校验（JWT Token）等
-4. shieroj-backend-judge-service：系统判题模块：调用远程代码沙箱接口，实现工厂模式、策略模式、代理模式，验证代码沙箱执行结果是否正确与错误，使用消息队列实现异步处理消息
-5. shieroj-backend-model：系统实体模块，比如用户实体类、题目实体类，VO、枚举等
-6. shieroj-backend-question-service：系统题目模块：题目的增删改查、题目提交限流、使用消息队列异步处理消息
-7. shieroj-backend-service-client：系统内部调用模块，给内部系统提供调用接口
-8. shieroj-backend-user-service：系统用户模块，管理员对用户的增删改查，用户自己信息查询，修改，头像上传。
+1. nutoj-backend-common：系统通用模块，比如用户角色权限校验，异常处理，统一返回值，常量，工具类等
+2. nutoj-backend-file-service：系统文件模块，比如用户头像上传等
+3. nutoj-backend-gateway：系统网关模块：实现了给前端返回统一接口路由，聚合文档（Knife4j），全局跨域配置，权限校验（JWT Token）等
+4. nutoj-backend-judge-service：系统判题模块：调用远程代码沙箱接口，实现工厂模式、策略模式、代理模式，验证代码沙箱执行结果是否正确与错误，使用消息队列实现异步处理消息
+5. nutoj-backend-model：系统实体模块，比如用户实体类、题目实体类，VO、枚举等
+6. nutoj-backend-question-service：系统题目模块：题目的增删改查、题目提交限流、使用消息队列异步处理消息
+7. nutoj-backend-service-client：系统内部调用模块，给内部系统提供调用接口
+8. nutoj-backend-user-service：系统用户模块，管理员对用户的增删改查，用户自己信息查询，修改，头像上传。
 
 ## 项目技术栈和特点 ❤️‍🔥
 

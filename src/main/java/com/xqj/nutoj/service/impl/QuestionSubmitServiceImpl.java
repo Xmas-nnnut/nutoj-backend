@@ -25,11 +25,10 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import com.xqj.nutoj.mq.MyMessageProducer;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 
@@ -49,6 +48,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     private UserService userService;
 
     @Resource
+    private MyMessageProducer myMessageProducer;
+
+    @Resource
     @Lazy
     private JudgeService judgeService;
 
@@ -56,8 +58,8 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
      * 提交题目
      *
      * @param questionSubmitAddRequest 题目提交信息
-     * @param loginUser
-     * @return
+     * @param loginUser 登录用户
+     * @return 提交题目 id
      */
     @Override
     public long doQuestionSubmit(QuestionSubmitAddRequest questionSubmitAddRequest, User loginUser) {
@@ -88,11 +90,14 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         if (!save){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
-        // 异步执行判题服务
+        // 执行判题服务
         Long questionSubmitId = questionSubmit.getId();
-        CompletableFuture.runAsync(() ->{
-            judgeService.doJudge(questionSubmitId);
-        });
+        // 发送消息
+        myMessageProducer.sendMessage("code_exchange", "my_routingKey", String.valueOf(questionSubmitId));
+        // 异步执行判题服务
+//        CompletableFuture.runAsync(() ->{
+//            judgeFeignClient.doJudge(questionSubmitId);
+//        });
 
         // todo: 设置提交数
         Integer submitNum = question.getSubmitNum();
@@ -140,6 +145,13 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         return queryWrapper;
     }
 
+    /**
+     * 获取查询封装类（单个）
+     *
+     * @param questionSubmit
+     * @param loginUser
+     * @return
+     */
     @Override
     public QuestionSubmitVO getQuestionSubmitVO(QuestionSubmit questionSubmit, User loginUser) {
         QuestionSubmitVO questionSubmitVO = QuestionSubmitVO.objToVo(questionSubmit);
@@ -152,6 +164,13 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         return questionSubmitVO;
     }
 
+    /**
+     * 获取查询脱敏信息
+     *
+     * @param questionSubmitPage 题目提交分页
+     * @param loginUser          直接获取到用户信息，减少查询数据库
+     * @return
+     */
     @Override
     public Page<QuestionSubmitVO> getQuestionSubmitVOPage(Page<QuestionSubmit> questionSubmitPage, User loginUser) {
         List<QuestionSubmit> questionSubmitList = questionSubmitPage.getRecords();
