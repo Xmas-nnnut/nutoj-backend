@@ -88,6 +88,32 @@ public interface UserService extends IService<User> {
     boolean userLogout(HttpServletRequest request);
 
     /**
+     * 根据标签搜索用户
+     *
+     * @param tagNameList
+     * @return
+     */
+    List<UserVO> searchUsersByTags(List<String> tagNameList);
+
+    /**
+     * 根据标签搜索用户（SQL版）
+     *
+     * @param tagNameList
+     * @return
+     */
+    @Deprecated
+    List<UserVO> searchUsersByTagsBySQL(List<String> tagNameList);
+
+    /**
+     * 匹配用户
+     *
+     * @param num
+     * @param loginUser
+     * @return
+     */
+    List<UserVO> matchUsers(long num, User loginUser);
+
+    /**
      * 获取脱敏的已登录用户信息
      *
      * @return
