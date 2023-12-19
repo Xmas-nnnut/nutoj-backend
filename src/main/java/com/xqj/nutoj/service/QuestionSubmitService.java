@@ -13,6 +13,7 @@ import com.xqj.nutoj.model.vo.QuestionSubmitVO;
 import com.xqj.nutoj.model.vo.QuestionVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author xuqingjian
@@ -54,5 +55,14 @@ public interface QuestionSubmitService extends IService<QuestionSubmit> {
      * @return
      */
     Page<QuestionSubmitVO> getQuestionSubmitVOPage(Page<QuestionSubmit> questionSubmitPage, User loginUser);
+
+    /**
+     * 分页获取题目封装列表
+     *
+     * @param questionSubmitQueryRequest
+     * @param loginUser
+     * @return
+     */
+    List<QuestionSubmitVO> getQuestionSubmitVOList(QuestionSubmitQueryRequest questionSubmitQueryRequest, User loginUser);
 
 }

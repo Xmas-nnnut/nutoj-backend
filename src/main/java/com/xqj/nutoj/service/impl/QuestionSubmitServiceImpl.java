@@ -185,6 +185,27 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         return questionSubmitVOPage;
     }
 
+    /**
+     * 获取查询脱敏信息（列表）
+     *
+     * @param questionSubmitQueryRequest
+     * @param loginUser
+     * @return
+     */
+    @Override
+    public List<QuestionSubmitVO> getQuestionSubmitVOList(QuestionSubmitQueryRequest questionSubmitQueryRequest, User loginUser) {
+        if (questionSubmitQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 根据查询信息获取列表
+        List<QuestionSubmit> questionSubmitList = list(getQueryWrapper(questionSubmitQueryRequest));
+        // 脱敏列表
+        List<QuestionSubmitVO> questionSubmitVOList = questionSubmitList.stream()
+                .map(questionSubmit -> getQuestionSubmitVO(questionSubmit, loginUser))
+                .collect(Collectors.toList());
+        return questionSubmitVOList;
+    }
+
 
 }
 

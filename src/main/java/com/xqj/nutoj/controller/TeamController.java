@@ -201,9 +201,13 @@ public class TeamController {
         if (teamQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        // 获取登录用户信息
         User loginUser = userService.getLoginUser(request);
+        // 创建一个查询条件包装器（QueryWrapper），用于构建查询条件
         QueryWrapper<UserTeam> queryWrapper = new QueryWrapper<>();
+        // 添加查询条件：userId等于登录用户的ID
         queryWrapper.eq("userId", loginUser.getId());
+        // 查询符合条件的用户队伍列表
         List<UserTeam> userTeamList = userTeamService.list(queryWrapper);
         // 取出不重复的队伍 id
         // teamId userId
@@ -213,11 +217,16 @@ public class TeamController {
         // result
         // 1 => 2, 3
         // 2 => 3
+        // 使用Java 8的流式操作，将用户队伍列表按照队伍ID分组
         Map<Long, List<UserTeam>> listMap = userTeamList.stream()
                 .collect(Collectors.groupingBy(UserTeam::getTeamId));
+        // 从分组后的Map中获取队伍ID列表
         List<Long> idList = new ArrayList<>(listMap.keySet());
+        // 将获取到的队伍ID列表设置到查询请求对象中
         teamQueryRequest.setIdList(idList);
+        // 查询符合条件的队伍列表
         List<TeamUserVO> teamList = teamService.listTeams(teamQueryRequest, true);
+        // 构造返回结果，成功时返回队伍列表
         return ResultUtils.success(teamList);
     }
 

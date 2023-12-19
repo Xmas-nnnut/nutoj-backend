@@ -163,15 +163,15 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 queryWrapper.eq("userId", userId);
             }
             // 根据状态来查询
-            Integer status = teamQueryRequest.getStatus();
-            TeamStatusEnum statusEnum = TeamStatusEnum.getEnumByValue(status);
-            if (statusEnum == null) {
-                statusEnum = TeamStatusEnum.PUBLIC;
-            }
-            if (!isAdmin && statusEnum.equals(TeamStatusEnum.PRIVATE)) {
-                throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-            }
-            queryWrapper.eq("status", statusEnum.getValue());
+//            Integer status = teamQueryRequest.getStatus();
+//            TeamStatusEnum statusEnum = TeamStatusEnum.getEnumByValue(status);
+//            if (statusEnum == null) {
+//                statusEnum = TeamStatusEnum.PUBLIC;
+//            }
+//            if (!isAdmin && statusEnum.equals(TeamStatusEnum.PRIVATE)) {
+//                throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+//            }
+//            queryWrapper.eq("status", statusEnum.getValue());
         }
         // 不展示已过期的队伍
         // expireTime is null or expireTime > now()

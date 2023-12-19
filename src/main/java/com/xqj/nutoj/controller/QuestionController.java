@@ -22,7 +22,7 @@ import com.xqj.nutoj.model.vo.QuestionVO;
 import com.xqj.nutoj.service.QuestionService;
 import com.xqj.nutoj.service.QuestionSubmitService;
 import com.xqj.nutoj.service.UserService;
-import io.swagger.annotations.ApiOperation;
+import com.xqj.nutoj.utils.CountSubmitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 题目接口
@@ -341,6 +342,51 @@ public class QuestionController {
         final User loginUser = userService.getLoginUser(request);
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
+    /**
+     * 分页获取当前用户题目提交列表
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/question_submit/my/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listMyQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                 HttpServletRequest request) {
+        if (questionSubmitQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        questionSubmitQueryRequest.setUserId(loginUser.getId());
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 从数据库中查询原始的题目提交分页信息
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
+    /**
+     * 获取当前用户提交记录
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return Array<{ date: Date | string; count: number; }>
+     */
+    @PostMapping("/question_submit/my/dailyCountList")
+    public BaseResponse<List<Map<String, Object>>> listMyDailyCountList(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                           HttpServletRequest request) {
+        if (questionSubmitQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        questionSubmitQueryRequest.setUserId(loginUser.getId());
+        List<QuestionSubmitVO> questionSubmitVOList = questionSubmitService.getQuestionSubmitVOList(questionSubmitQueryRequest, loginUser);
+        List<Map<String, Object>> resultList = CountSubmitUtils.countByCreateTime(questionSubmitVOList);
+        return ResultUtils.success(resultList);
     }
 
 
