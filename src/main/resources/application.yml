@@ -4,7 +4,7 @@ spring:
     name: nutoj-backend
   # 默认 dev 环境
   profiles:
-    active: dev
+    active: prod
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -15,33 +15,6 @@ spring:
     store-type: redis
     # 30 天过期
     timeout: 2592000
-  # 数据库配置
-  # todo 需替换配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://178.173.230.157:3306/nutoj
-#    username: oj
-    url: jdbc:mysql://localhost:3306/nutoj
-    username: root
-    password: 123456
-  # Redis 配置
-  # todo 需替换配置，然后取消注释
-  redis:
-    database: 3
-    host: localhost
-    port: 6379
-    timeout: 5000
-    password: 123456
-  # 文件上传
-  servlet:
-    multipart:
-      # 大小限制
-      max-file-size: 10MB
-  rabbitmq:
-    host: localhost
-    port: 5672
-    password: guest
-    username: guest
 server:
   address: 0.0.0.0
   port: 8121

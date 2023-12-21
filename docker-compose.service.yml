@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nutoj-backend:
+    container_name: nutoj-backend
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8121:8121"
+    networks:
+      - mynetwork
+
+# 网络，不定义的话就是默认网络
+networks:
+  mynetwork:

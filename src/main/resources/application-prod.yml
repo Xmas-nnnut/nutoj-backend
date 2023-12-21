@@ -1,26 +1,32 @@
-# 线上配置文件
-server:
-  port: 8121
+# 生产环境配置文件
 spring:
   # 数据库配置
-  # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/nutoj
+    url: jdbc:mysql://mysql:3306/nutoj
     username: root
     password: 123456
   # Redis 配置
-  # todo 需替换配置
   redis:
-    database: 2
-    host: localhost
+    database: 1
+    host: redis
     port: 6379
     timeout: 5000
     password: 123456
+  # 文件上传
+  servlet:
+    multipart:
+      # 大小限制
+      max-file-size: 10MB
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    password: guest
+    username: guest
 mybatis-plus:
   configuration:
     # 生产环境关闭日志
     log-impl: ''
-knife4j:
-  enable: true
-  production: true
+#knife4j:
+#  enable: true
+#  production: true
