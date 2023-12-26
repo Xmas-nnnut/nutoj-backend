@@ -6,10 +6,10 @@ create database if not exists nutoj;
 -- 切换库
 use nutoj;
 
--- 用户表
+-- 1.用户表
 create table if not exists user
 (
-    id           bigint auto_increment comment 'id' primary key,
+    id           bigint auto_increment comment 'id'     primary key,
     userAccount  varchar(256)                           not null comment '账号',
     userPassword varchar(512)                           not null comment '密码',
     unionId      varchar(256)                           null comment '微信开放平台id',
@@ -25,7 +25,7 @@ create table if not exists user
     index idx_unionId (unionId)
 ) comment '用户' collate = utf8mb4_unicode_ci;
 
--- 题目表
+-- 2.题目表
 create table if not exists question
 (
     id         bigint auto_increment comment 'id' primary key,
@@ -33,8 +33,8 @@ create table if not exists question
     content    text                               null comment '内容',
     tags       varchar(1024)                      null comment '标签列表（json 数组）',
     answer     text                               null comment '题目答案',
-    submitNum  int  default 0 not null comment '题目提交数',
-    acceptedNum  int  default 0 not null comment '题目通过数',
+    submitNum  int      default 0                 not null comment '题目提交数',
+    acceptedNum  int    default 0                 not null comment '题目通过数',
     judgeCase text null comment '判题用例（json 数组）',
     judgeConfig text null comment '判题配置（json 对象）',
     thumbNum   int      default 0                 not null comment '点赞数',
@@ -46,7 +46,7 @@ create table if not exists question
     index idx_userId (userId)
 ) comment '题目' collate = utf8mb4_unicode_ci;
 
--- 题目提交表
+-- 3.题目提交表
 create table if not exists question_submit
 (
     id         bigint auto_increment comment 'id' primary key,
@@ -63,7 +63,7 @@ create table if not exists question_submit
     index idx_userId (userId)
 ) comment '题目提交';
 
--- 队伍表
+-- 4.队伍表
 create table team
 (
     id          bigint auto_increment comment 'id' primary key,
@@ -75,24 +75,23 @@ create table team
     status      int      default 0 not null comment '0 - 公开，1 - 私有，2 - 加密',
     password    varchar(512) null comment '密码',
     createTime  datetime default CURRENT_TIMESTAMP null comment '创建时间',
-    updateTime  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    updateTime  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete    tinyint  default 0 not null comment '是否删除'
 ) comment '队伍';
 
--- 用户队伍关系
+-- 5.用户队伍关系
 create table user_team
 (
-    id         bigint auto_increment comment 'id'
-        primary key,
+    id         bigint auto_increment comment 'id' primary key,
     userId     bigint comment '用户id',
     teamId     bigint comment '队伍id',
     joinTime   datetime null comment '加入时间',
     createTime datetime default CURRENT_TIMESTAMP null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0 not null comment '是否删除'
 ) comment '用户队伍关系';
 
--- 帖子表
+-- 6.帖子表
 create table if not exists post
 (
     id         bigint auto_increment comment 'id' primary key,
@@ -108,7 +107,7 @@ create table if not exists post
     index idx_userId (userId)
 ) comment '帖子' collate = utf8mb4_unicode_ci;
 
--- 帖子点赞表（硬删除）
+-- 7.帖子点赞表（硬删除）
 create table if not exists post_thumb
 (
     id         bigint auto_increment comment 'id' primary key,
@@ -120,7 +119,7 @@ create table if not exists post_thumb
     index idx_userId (userId)
 ) comment '帖子点赞';
 
--- 帖子收藏表（硬删除）
+-- 8.帖子收藏表（硬删除）
 create table if not exists post_favour
 (
     id         bigint auto_increment comment 'id' primary key,
@@ -131,3 +130,32 @@ create table if not exists post_favour
     index idx_postId (postId),
     index idx_userId (userId)
 ) comment '帖子收藏';
+
+-- 9.题目评论表
+create table question_comment
+(
+    id         bigint auto_increment comment 'id' primary key,
+    content    text                               not null comment '内容',
+    userId     bigint                             not null comment '创建用户 id',
+    questionId bigint                             not null comment '关联题目 id',
+    userName   varchar(256)                           null comment '用户昵称',
+    userAvatar varchar(1024)                          null comment '用户头像',
+    thumbNum   int      default 0                 not null comment '点赞数',
+    favourNum  int      default 0                 not null comment '收藏数',
+    createTime datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0 not null comment '是否删除'
+) comment '题目评论表';
+
+-- 10.记录表
+create table record
+(
+    id         bigint auto_increment comment 'id' primary key,
+    userId     bigint                             not null comment '用户 id',
+    teamId     bigint                             null comment '队伍 id',
+    acNum      int      default 0                 not null comment 'AC数',
+    subNum     int      default 0                 not null comment '提交数',
+    createTime datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0 not null comment '是否删除'
+) comment '记录表';
