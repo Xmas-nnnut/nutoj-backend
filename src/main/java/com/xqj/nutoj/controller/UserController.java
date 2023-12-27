@@ -19,6 +19,7 @@ import com.xqj.nutoj.model.dto.user.UserQueryRequest;
 import com.xqj.nutoj.model.dto.user.UserRegisterRequest;
 import com.xqj.nutoj.model.dto.user.UserUpdateMyRequest;
 import com.xqj.nutoj.model.dto.user.UserUpdateRequest;
+import com.xqj.nutoj.service.RecordService;
 import com.xqj.nutoj.service.UserService;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +57,9 @@ public class UserController {
     private UserService userService;
 
     @Resource
+    private RecordService recordService;
+
+    @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
     // region 登录相关
@@ -80,6 +84,8 @@ public class UserController {
             return null;
         }
         long result = userService.userRegister(userAccount, userPassword, checkPassword, userName);
+        // 初始化用户记录
+        recordService.initUserRecord(result);
         return ResultUtils.success(result);
     }
 

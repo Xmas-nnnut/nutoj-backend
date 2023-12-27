@@ -152,9 +152,8 @@ create table record
 (
     id         bigint auto_increment comment 'id' primary key,
     userId     bigint                             not null comment '用户 id',
-    teamId     bigint                             null comment '队伍 id',
-    acNum      int      default 0                 not null comment 'AC数',
-    subNum     int      default 0                 not null comment '提交数',
+    acceptedNum      int      default 0                 not null comment 'AC数',
+    submitNum     int      default 0                 not null comment '提交数',
     createTime datetime default CURRENT_TIMESTAMP null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0 not null comment '是否删除'

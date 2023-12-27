@@ -99,7 +99,7 @@ public class JudgeServiceImpl implements JudgeService {
         // todo: 设置通过数
 //        Integer acceptedNum = question.getAcceptedNum();
 //        Question updateQuestion = new Question();
-//        synchronized (question.getSubmitNum()) {
+//        synchronized (question.getAcceptedNum()) {
 //            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
 //                acceptedNum = acceptedNum + 1;
 //            }

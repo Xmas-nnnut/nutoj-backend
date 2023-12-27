@@ -5,6 +5,7 @@ import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,7 +21,8 @@ import javax.annotation.Resource;
 public class RedisLimiterManager {
 
     @Resource
-    private RedissonClient redissonClient;
+    @Qualifier("rateLimitRedissonClient") // 指定使用限流数据数据库的RedissonClient
+    private RedissonClient rateLimitRedissonClient;
 
     /**
      * 限流操作
@@ -29,7 +31,7 @@ public class RedisLimiterManager {
      */
     public boolean doRateLimit(String key) {
         // 创建一个限流器
-        RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
+        RRateLimiter rateLimiter = rateLimitRedissonClient.getRateLimiter(key);
         // 每秒最多访问 2 次
         // 参数1 type：限流类型，可以是自定义的任何类型，用于区分不同的限流策略。
         // 参数2 rate：限流速率，即单位时间内允许通过的请求数量。

@@ -9,6 +9,7 @@ spring:
   # Redis 配置
   redis:
     database: 3
+    rateLimitDatabase: 4
     host: localhost
     port: 6379
     timeout: 5000

@@ -81,6 +81,8 @@ public class PostVO implements Serializable {
      */
     private Boolean hasFavour;
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 包装类转对象
      *

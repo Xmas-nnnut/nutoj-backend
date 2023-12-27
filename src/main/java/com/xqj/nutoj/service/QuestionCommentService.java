@@ -36,7 +36,7 @@ public interface QuestionCommentService extends IService<QuestionComment> {
     QueryWrapper<QuestionComment> getQueryWrapper(QuestionCommentQueryRequest questionCommentQueryRequest);
 
     /**
-     * 获取帖子封装
+     * 获取题目评论封装
      *
      * @param questionComment
      * @param request
@@ -45,7 +45,7 @@ public interface QuestionCommentService extends IService<QuestionComment> {
     QuestionCommentVO getQuestionCommentVO(QuestionComment questionComment, HttpServletRequest request);
 
     /**
-     * 分页获取帖子封装
+     * 分页获取题目评论封装
      *
      * @param questionCommentPage
      * @param request

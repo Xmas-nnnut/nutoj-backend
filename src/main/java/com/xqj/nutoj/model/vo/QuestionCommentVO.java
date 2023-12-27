@@ -84,4 +84,6 @@ public class QuestionCommentVO implements Serializable {
      */
     private Boolean hasFavour;
 
+    private static final long serialVersionUID = 1L;
+
 }

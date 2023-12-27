@@ -9,8 +9,10 @@ import com.xqj.nutoj.exception.BusinessException;
 import com.xqj.nutoj.judge.JudgeService;
 import com.xqj.nutoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.xqj.nutoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
+import com.xqj.nutoj.model.dto.record.RecordQueryRequest;
 import com.xqj.nutoj.model.entity.Question;
 import com.xqj.nutoj.model.entity.QuestionSubmit;
+import com.xqj.nutoj.model.entity.Record;
 import com.xqj.nutoj.model.entity.User;
 import com.xqj.nutoj.model.enums.QuestionSubmitLanguageEnum;
 import com.xqj.nutoj.model.enums.QuestionSubmitStatusEnum;
@@ -18,6 +20,7 @@ import com.xqj.nutoj.model.vo.QuestionSubmitVO;
 import com.xqj.nutoj.service.QuestionService;
 import com.xqj.nutoj.service.QuestionSubmitService;
 import com.xqj.nutoj.mapper.QuestionSubmitMapper;
+import com.xqj.nutoj.service.RecordService;
 import com.xqj.nutoj.service.UserService;
 import com.xqj.nutoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,6 +51,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     private UserService userService;
 
     @Resource
+    private RecordService recordService;
+
+    @Resource
     private MyMessageProducer myMessageProducer;
 
     @Resource
@@ -70,13 +76,21 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "编程语言错误");
         }
         long questionId = questionSubmitAddRequest.getQuestionId();
+        long userId = loginUser.getId();
         // 判断实体是否存在，根据类别获取实体
         Question question = questionService.getById(questionId);
         if (question == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
+        // 封装查询对象，根据用户 id 查询 record
+        RecordQueryRequest recordQueryRequest = new RecordQueryRequest();
+        recordQueryRequest.setUserId(userId);
+        QueryWrapper<Record> queryWrapper = recordService.getQueryWrapper(recordQueryRequest);
+        Record record = recordService.getOne(queryWrapper);
+        if (record == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
         // 是否已提交题目
-        long userId = loginUser.getId();
         // 每个用户串行提交题目
         QuestionSubmit questionSubmit = new QuestionSubmit();
         questionSubmit.setUserId(userId);
@@ -107,6 +121,17 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
             updateQuestion.setId(questionId);
             updateQuestion.setSubmitNum(submitNum);
             save = questionService.updateById(updateQuestion);
+            if (!save) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
+            }
+        }
+        Integer userSubmitNum = record.getSubmitNum();
+        Record updateRecord = new Record();
+        synchronized (record.getSubmitNum()) {
+            userSubmitNum = userSubmitNum + 1;
+            updateRecord.setId(questionId);
+            updateRecord.setSubmitNum(userSubmitNum);
+            save = recordService.updateById(updateRecord);
             if (!save) {
                 throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
             }

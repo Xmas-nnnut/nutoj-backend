@@ -1,22 +1,23 @@
-package com.xqj.nutoj.model.entity;
+package com.xqj.nutoj.model.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.google.gson.Gson;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 记录表
- * @TableName record
+ * 评论视图
+ *
  */
-@TableName(value ="record")
 @Data
-public class Record implements Serializable {
+public class RecordVO implements Serializable {
+
+    private final static Gson GSON = new Gson();
+
     /**
      * id
      */
-    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -45,11 +46,10 @@ public class Record implements Serializable {
     private Date updateTime;
 
     /**
-     * 是否删除
+     * 创建人信息
      */
-    @TableLogic
-    private Integer isDelete;
+    private UserVO user;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 }
