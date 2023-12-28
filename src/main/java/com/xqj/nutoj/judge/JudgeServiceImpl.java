@@ -1,6 +1,7 @@
 package com.xqj.nutoj.judge;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xqj.nutoj.common.ErrorCode;
 import com.xqj.nutoj.exception.BusinessException;
 import com.xqj.nutoj.judge.codesandbox.CodeSandbox;
@@ -11,11 +12,15 @@ import com.xqj.nutoj.judge.codesandbox.model.ExecuteCodeResponse;
 import com.xqj.nutoj.judge.strategy.JudgeContext;
 import com.xqj.nutoj.model.dto.question.JudgeCase;
 import com.xqj.nutoj.judge.codesandbox.model.JudgeInfo;
+import com.xqj.nutoj.model.dto.record.RecordQueryRequest;
 import com.xqj.nutoj.model.entity.Question;
 import com.xqj.nutoj.model.entity.QuestionSubmit;
+import com.xqj.nutoj.model.entity.Record;
 import com.xqj.nutoj.model.enums.QuestionSubmitStatusEnum;
 import com.xqj.nutoj.service.QuestionService;
 import com.xqj.nutoj.service.QuestionSubmitService;
+import com.xqj.nutoj.service.RecordService;
+import com.xqj.nutoj.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +39,9 @@ public class JudgeServiceImpl implements JudgeService {
     private QuestionSubmitService questionSubmitService;
 
     @Resource
+    private RecordService recordService;
+
+    @Resource
     private JudgeManager judgeManager;
 
     @Value("${codesandbox.type:example}")
@@ -41,7 +49,7 @@ public class JudgeServiceImpl implements JudgeService {
 
 
     @Override
-    public QuestionSubmit doJudge(long questionSubmitId) {
+    public QuestionSubmit doJudge(long questionSubmitId, long userId) {
         // 1）传入题目的提交 id，获取到对应的题目、提交信息（包含代码、编程语言等）
         QuestionSubmit questionSubmit = questionSubmitService.getById(questionSubmitId);
         if (questionSubmit == null) {
@@ -95,21 +103,41 @@ public class JudgeServiceImpl implements JudgeService {
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
 
-
         // todo: 设置通过数
-//        Integer acceptedNum = question.getAcceptedNum();
-//        Question updateQuestion = new Question();
-//        synchronized (question.getAcceptedNum()) {
-//            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
-//                acceptedNum = acceptedNum + 1;
-//            }
-//            updateQuestion.setId(questionId);
-//            updateQuestion.setAcceptedNum(acceptedNum);
-//            boolean save = questionService.updateById(updateQuestion);
-//            if (!save) {
-//                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
-//            }
-//        }
+        Integer acceptedNum = question.getAcceptedNum();
+        Question updateQuestion = new Question();
+        synchronized (question.getAcceptedNum()) {
+            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
+                acceptedNum = acceptedNum + 1;
+            }
+            updateQuestion.setId(questionId);
+            updateQuestion.setAcceptedNum(acceptedNum);
+            boolean save = questionService.updateById(updateQuestion);
+            if (!save) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
+            }
+        }
+        // 封装查询对象，根据用户 id 查询 record
+        RecordQueryRequest recordQueryRequest = new RecordQueryRequest();
+        recordQueryRequest.setUserId(userId);
+        QueryWrapper<Record> queryWrapper = recordService.getQueryWrapper(recordQueryRequest);
+        Record record = recordService.getOne(queryWrapper);
+        if (record == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        Integer userAcceptedNum = record.getAcceptedNum();
+        Record updateRecord = new Record();
+        synchronized (question.getAcceptedNum()) {
+            if (Objects.equals(judgeInfo.getMessage(), "Accepted")) {
+                userAcceptedNum = userAcceptedNum + 1;
+            }
+            updateRecord.setId(questionId);
+            updateRecord.setAcceptedNum(userAcceptedNum);
+            boolean save = recordService.updateById(updateRecord);
+            if (!save) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "数据保存失败");
+            }
+        }
 
 
         update = questionSubmitService.updateById(questionSubmitUpdate);

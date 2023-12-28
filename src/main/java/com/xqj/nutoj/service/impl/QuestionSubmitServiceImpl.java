@@ -17,6 +17,7 @@ import com.xqj.nutoj.model.entity.User;
 import com.xqj.nutoj.model.enums.QuestionSubmitLanguageEnum;
 import com.xqj.nutoj.model.enums.QuestionSubmitStatusEnum;
 import com.xqj.nutoj.model.vo.QuestionSubmitVO;
+import com.xqj.nutoj.mq.SendMessage;
 import com.xqj.nutoj.service.QuestionService;
 import com.xqj.nutoj.service.QuestionSubmitService;
 import com.xqj.nutoj.mapper.QuestionSubmitMapper;
@@ -33,6 +34,9 @@ import com.xqj.nutoj.mq.MyMessageProducer;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.xqj.nutoj.constant.MqConstant.EXCHANGE_NAME;
+import static com.xqj.nutoj.constant.MqConstant.ROUTING_KEY;
 
 
 /**
@@ -107,7 +111,11 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         // 执行判题服务
         Long questionSubmitId = questionSubmit.getId();
         // 发送消息
-        myMessageProducer.sendMessage("code_exchange", "my_routingKey", String.valueOf(questionSubmitId));
+        SendMessage message = new SendMessage();
+        message.setQuestionSubmitId(questionSubmitId);
+        message.setUserId(userId);
+        myMessageProducer.sendMessage(EXCHANGE_NAME, ROUTING_KEY, message);
+//        myMessageProducer.sendMessage(EXCHANGE_NAME, ROUTING_KEY, String.valueOf(questionSubmitId));
         // 异步执行判题服务
 //        CompletableFuture.runAsync(() ->{
 //            judgeFeignClient.doJudge(questionSubmitId);

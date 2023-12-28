@@ -17,7 +17,7 @@ public class MyMessageProducer {
      * @param routingKey
      * @param message
      */
-    public void sendMessage(String exchange, String routingKey, String message) {
+    public void sendMessage(String exchange, String routingKey, SendMessage message) {
         rabbitTemplate.convertAndSend(exchange, routingKey, message);
     }
 
