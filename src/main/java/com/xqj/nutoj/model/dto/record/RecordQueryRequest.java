@@ -35,5 +35,10 @@ public class RecordQueryRequest extends PageRequest implements Serializable {
      */
     private Integer submitNum;
 
+    /**
+     * 排序字段
+     */
+    private String sortField;
+
     private static final long serialVersionUID = 1L;
 }

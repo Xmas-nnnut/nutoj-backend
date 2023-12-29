@@ -27,11 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 帖子接口
+ * 评论接口
  *
  */
 @RestController
-@RequestMapping("/questionComment")
+@RequestMapping("/question_comment")
 @Slf4j
 public class QuestionCommentController {
 
