@@ -27,6 +27,12 @@ public class JudgeManager {
         if ("java".equals(language)) {
             judgeStrategy = new JavaLanguageJudgeStrategy();
         }
+        if ("cpp".equals(language)) {
+            judgeStrategy = new DefaultJudgeStrategy();
+        }
+        if ("c".equals(language)) {
+            judgeStrategy = new DefaultJudgeStrategy();
+        }
         return judgeStrategy.doJudge(judgeContext);
     }
 

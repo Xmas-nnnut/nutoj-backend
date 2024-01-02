@@ -1,6 +1,5 @@
 package com.xqj.nutoj.judge.strategy;
 
-
 import cn.hutool.json.JSONUtil;
 import com.xqj.nutoj.model.dto.question.JudgeCase;
 import com.xqj.nutoj.model.dto.question.JudgeConfig;
@@ -24,7 +23,7 @@ public class JavaLanguageJudgeStrategy implements JudgeStrategy {
     @Override
     public JudgeInfo doJudge(JudgeContext judgeContext) {
         JudgeInfo judgeInfo = judgeContext.getJudgeInfo();
-        // todo: memory为什么为空
+        // todo: memory为空
         Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
         Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
         List<String> inputList = judgeContext.getInputList();
